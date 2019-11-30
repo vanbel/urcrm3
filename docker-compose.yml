@@ -1,42 +1,41 @@
 version: '3'
 services:
-    urcrm3-nginx:
+    nginx:
         build:
             context: ./docker
             dockerfile: nginx.docker
         volumes:
             - ./:/var/www
         depends_on:
-            - urcrm3-php-fpm
+            - php-fpm
         ports:
             - "8080:80"
-    urcrm3-php-fpm:
+    php-fpm:
         build:
             context: ./docker
             dockerfile: php-fpm.docker
         volumes:
             - ./:/var/www
         depends_on:
-#            - postgres
-            - mysql
-#    postgres:
-#        image: postgres:11.2-alpine
-#        volumes:
-#            - ./storage/docker/postgres:/var/lib/postgresql/data
-#        environment:
-#            POSTGRES_USER: urcrm3
-#            POSTGRES_PASSWORD: vanbel
-#            POSTGRES_DB: urcrm3
-#        ports:
-#            - "54321:5432"
-    mysql:
-        image: mysql:5.7
+            - postgres
+    php-cli:
+        build:
+            context: ./docker
+            dockerfile: php-cli.docker
         volumes:
-            - ./storage/docker/mysql:/var/lib/mysql
+            - ./:/var/www
+            - composer:/root/.composer/cache
+        depends_on:
+            - postgres
+    postgres:
+        image: postgres:11.2-alpine
+        volumes:
+            - ./storage/docker/postgres:/var/lib/postgresql/data
         environment:
-            - "MYSQL_ROOT_PASSWORD=ur911"
-            - "MYSQL_USER=urcrm911"
-            - "MYSQL_PASSWORD=urcrm911"
-            - "MYSQL_DATABASE=urcrm3"
+            POSTGRES_USER: crazy8
+            POSTGRES_PASSWORD: vanbel666
+            POSTGRES_DB: urcrm3
         ports:
-            - "33061:3306"
+            - "54321:5432"
+volumes:
+    composer:

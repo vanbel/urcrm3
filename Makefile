@@ -24,7 +24,11 @@ docker-rm:
 	docker rm $(docker ps -a -q)
 
 docker-rmi:
-    docker rmi $(docker images -q)
+	docker rmi $(docker images -q)
+
+migrations:
+	docker-compose run --rm php-cli php bin/console doctrine:migrations:migrate --no-interaction
+
 
 
 # docker exec -ti test-subject bash
